@@ -38,7 +38,7 @@ function spotifyThis(){
 
   if(userInput === undefined) {
 
-    spotify.search({ type: 'track', query: 'The Sign' }, function(err, data) {
+    spotify.search({ type: 'track', query: 'The Sign', limit:1 }, function(err, data) {
 
       if (err) {
         return console.log('Error occurred: ' + err);
@@ -47,6 +47,8 @@ function spotifyThis(){
         for (var i = 0; i <data.length; i++){
 
           // artist, song name, preview link, album
+        
+
           console.log("Artist: " + data.tracks.items.album.artists);
           console.log("Track: " + data.tracks.item)
           console.log("Album: " + data.traks.item.album);
@@ -56,19 +58,23 @@ function spotifyThis(){
     });
   }
   else {
-    spotify.search({ type: 'track', query: userInput}, function(err, data) {
+    spotify.search({ type: 'track', query: userInput, limit:1}, function(err, data) {
 
       if (err) {
           return console.log('Error occurred: ' + err);
       }
         // artist, song name, preview link, album !!!!
-        // console.log(data); 
+        // console.log(data.tracks.items); 
 
-        for (var i = 0; i <data.length; i++){
+          var test = JSON.stringify(data);
+          var test2 = JSON.parse(data,null,2);
+          console.log(test2);
 
-        console.log("Artist: " + data.tracks.items.album.artists);
-        console.log("Track: " + data.tracks.item);
-        console.log("Album: " + data.traks.item.album);
+        for (var i = 0; i < data.tracks.items.length; i++){
+
+        console.log("Artist: " + data.tracks.items[i].artists[0].name);
+        console.log("Track: " + data.tracks.item[i].album.name);
+        console.log("Album: " + data.traks.item[i].album);
 
         }
 
