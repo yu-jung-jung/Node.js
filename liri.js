@@ -1,126 +1,151 @@
-//user-input
+//user input
 var order = process.argv[2];
+var userInput = process.argv[3];
 
-//import key.js
+//imports key.js
 var keys = require("./key.js");
 
+//install npm
+var Twitter = require('twitter');
+var Spotify = require('node-spotify-api');
+var request = require('request');
+var fs = require("fs");
+
 //node liri.js my-tweets
-if (order === "my-tweets") {
+function myTweets () {
+  var params = {screen_name: 'blitheyj'};
+  var client = new Twitter(keys.twitterK);
 
-  function myTweets () {
+  client.get('statuses/user_timeline', params, function(error, tweets, response){
 
-    var twitter = require('twitter');
+    if (!error) {
 
-    var params = {screen_name: 'blitheyj'};
+    for (var i =0; i <tweets.length; i++){
 
-    var client = (twitter)(keys.twitterK);
+      console.log(tweets[i].created_at);
+      console.log(tweets[i].text);
 
-  client.get('statuses/user_timeline', params, function(error, tweets, response) {
-  if (!error) {
-
-    console.log(tweets);
-
-    }
-
-  });
-
+        } 
+      }
+    });
   }
-}
-// node liri.js spotify-this-song 'song name'
-// take multiple words
-// If no song is provided then your program will default to "The Sign" by Ace of Base.
-else if(order === "spotify-this-song") {
 
-  function spotifyThis () {
+// node liri.js spotify-this-song 'song name' 
 
-  var Spotify = require('node-spotify-api');
-   
+function spotifyThis(){
+
   var spotify = new Spotify(keys.spotifyK);
 
-  var songName = process.argv[3]
+  if(userInput === undefined) {
 
-  spotify.search({ type: 'artist', query: songName}, function(err, data) {
-  // if no song is provided then your program will default to "The Sign" by Ace of Base.
-    if (err) {
-      return console.log('Error occurred: ' + err);
-    }   
-      console.log(data.tracks);
+    spotify.search({ type: 'track', query: 'The Sign' }, function(err, data) {
+
+      if (err) {
+        return console.log('Error occurred: ' + err);
+      }
+
+        for (var i = 0; i <data.length; i++){
+
+          // artist, song name, preview link, album
+          console.log("Artist: " + data.tracks.items.album.artists);
+          console.log("Track: " + data.tracks.item)
+          console.log("Album: " + data.traks.item.album);
+
+        }       
 
     });
-
   }
+  else {
+    spotify.search({ type: 'track', query: userInput}, function(err, data) {
+
+      if (err) {
+          return console.log('Error occurred: ' + err);
+      }
+        // artist, song name, preview link, album !!!!
+        // console.log(data); 
+
+        for (var i = 0; i <data.length; i++){
+
+        console.log("Artist: " + data.tracks.items.album.artists);
+        console.log("Track: " + data.tracks.item);
+        console.log("Album: " + data.traks.item.album);
+
+        }
+
+    });
+  }
+
 }
 
 // node liri.js movie-this 'movie name'
-// take multiple words
-// err: If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
-else if(order === "movie-this"){
+function movieThis(){
+    var queryUrl = "http://www.omdbapi.com/?t=" + userInput + "&y=&plot=short&apikey=40e9cece";
 
-  function movieThis() {
+    if(userInput = undefined){
+      request("http://www.omdbapi.com/?t=Mr.nobody&y=&plot=short&apikey=40e9cece", function (error, response, body) {
+      
+        if (!error && response.statusCode === 200) {
 
-  var request = require('request');
-
-  var movieName = process.argv[3];
-
-  var queryUrl =  "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=40e9cece";
-  request(queryUrl, function (error, response, body) {
+          console.log("Title               :" + JSON.parse(body).Title);
+          console.log("Year                :" + JSON.parse(body).Year);
+          console.log("IMDB Rating         :" + JSON.parse(body).imdbRating);
+          console.log("Rotten Tomato Rating:" + JSON.parse(body).Ratings);
+          console.log("Country             :" + JSON.parse(body).Country);
+          console.log("Language            :" + JSON.parse(body).Language);
+          console.log("Plot                :" + JSON.parse(body).Plot);
+          console.log("Actors              :" + JSON.parse(body).Actors);
+          }  
+      });
+    } else {
+      request(queryUrl, function (error, response, body) {
     
-      if (!error && response.statusCode === 200) {
-
-        console.log("Title               :" + JSON.parse(body).Title);
-        console.log("Year                :" + JSON.parse(body).Year);
-        console.log("IMDB Rating         :" + JSON.parse(body).imdbRating);
-        console.log("Rotten Tomato Rating:" + JSON.parse(body).Ratings);
-        console.log("Country             :" + JSON.parse(body).Country);
-        console.log("Language            :" + JSON.parse(body).Language);
-        console.log("Plot                :" + JSON.parse(body).Plot);
-        console.log("Actors              :" + JSON.parse(body).Actors);
-     
+        if (!error && response.statusCode === 200) {
+            //rotten tomato !!!
+          console.log("Title               :" + JSON.parse(body).Title);
+          console.log("Year                :" + JSON.parse(body).Year);
+          console.log("IMDB Rating         :" + JSON.parse(body).imdbRating);
+          console.log("Rotten Tomato Rating:" + JSON.parse(body).Ratings);
+          console.log("Country             :" + JSON.parse(body).Country);
+          console.log("Language            :" + JSON.parse(body).Language);
+          console.log("Plot                :" + JSON.parse(body).Plot);
+          console.log("Actors              :" + JSON.parse(body).Actors);
+          }      
+      });
+    }
   }
-  
+
+// node liri.js do-what-it-says
+function doThis() {
+
+  fs.readFile("random.txt", "utf8", function(err,data){
+    if(err){
+       return console.log(err);
+       } 
+        data = data.split(",");
+
+          userInput = data[1];
+              
+          spotifyThis();
   });
 
-  }
-}
-// node liri.js do-what-it-says
-else if(order === "do-what-it-says"){
-
-
-  function doThis() {
-
-    var fs = require("fs");
-
-    switch (order) {
-
-      case "my-tweets":
-        myTweets()
-        break;
-
-      case "spotify-this-song":
-        spotifyThis()
-        break;
-
-      case "movie-this":
-        movieThis()
-        break;
-    }
-
-// read txt file and apply to the command line
-
-    fs.readFile("random.txt", "utf8", function(err, data){
-      if(err){
-
-        return console.log(err);
-      }
-
-      data = data.split(",");
-
-    })
-
-  }
 }
 
-// if nothing matches
-else{
-  console.log("Sorry, Could you try one more time?")
+if (order === "my-tweets"){
+
+  myTweets();
+}
+else if (order === "spotify-this-song"){
+
+  spotifyThis();
+}
+else if (order === "movie-this"){
+
+  movieThis();
+}
+else if (order === "do-what-it-says"){
+
+  doThis();
+} else {
+
+  console.log("Sorry, That is undefined order")
 }
