@@ -44,17 +44,17 @@ function spotifyThis(){
         return console.log('Error occurred: ' + err);
       }
 
-        for (var i = 0; i <data.length; i++){
+      var spotifyData = data.tracks.items;
 
-          // artist, song name, preview link, album
-        
+        for (var i = 0; i <spotifyData.length; i++){
 
-          console.log("Artist: " + data.tracks.items.album.artists);
-          console.log("Track: " + data.tracks.item)
-          console.log("Album: " + data.traks.item.album);
+          // artist, song name, preview link, album  
 
-        }       
-
+          console.log("Artist       : " + spotifyData[i].artists[0].name);
+          console.log("Song Name    : " + spotifyData[i].name);
+          console.log("Album        : " + spotifyData[i].album.name);
+          console.log("Preview Link : " + spotifyData[i].preview_url);
+        }    
     });
   }
   else {
@@ -63,20 +63,19 @@ function spotifyThis(){
       if (err) {
           return console.log('Error occurred: ' + err);
       }
-        // artist, song name, preview link, album !!!!
-        // console.log(data.tracks.items); 
 
-          var test = JSON.stringify(data);
-          var test2 = JSON.parse(data,null,2);
-          console.log(test2);
-
+       
         for (var i = 0; i < data.tracks.items.length; i++){
 
-        console.log("Artist: " + data.tracks.items[i].artists[0].name);
-        console.log("Track: " + data.tracks.item[i].album.name);
-        console.log("Album: " + data.traks.item[i].album);
 
-        }
+          // artist, song name, preview link, album  
+
+          console.log("Artist       : " + data.tracks.items[i].artists[0].name);
+          console.log("Song Name    : " + data.tracks.items[i].name);
+          console.log("Album        : " + data.tracks.items[i].album.name);
+          console.log("Preview Link : " + data.tracks.items[i].preview_url);
+        } 
+        
 
     });
   }
@@ -95,7 +94,7 @@ function movieThis(){
           console.log("Title               :" + JSON.parse(body).Title);
           console.log("Year                :" + JSON.parse(body).Year);
           console.log("IMDB Rating         :" + JSON.parse(body).imdbRating);
-          console.log("Rotten Tomato Rating:" + JSON.parse(body).Ratings);
+          console.log("Rotten Tomato Rating:" + JSON.parse(body).tomatoRating);
           console.log("Country             :" + JSON.parse(body).Country);
           console.log("Language            :" + JSON.parse(body).Language);
           console.log("Plot                :" + JSON.parse(body).Plot);
@@ -110,7 +109,7 @@ function movieThis(){
           console.log("Title               :" + JSON.parse(body).Title);
           console.log("Year                :" + JSON.parse(body).Year);
           console.log("IMDB Rating         :" + JSON.parse(body).imdbRating);
-          console.log("Rotten Tomato Rating:" + JSON.parse(body).Ratings);
+          console.log("Rotten Tomato Rating:" + JSON.parse(body).tomatoRating);
           console.log("Country             :" + JSON.parse(body).Country);
           console.log("Language            :" + JSON.parse(body).Language);
           console.log("Plot                :" + JSON.parse(body).Plot);
